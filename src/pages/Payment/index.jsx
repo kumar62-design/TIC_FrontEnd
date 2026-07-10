@@ -215,7 +215,7 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
                       />
                     </ListItem>
                   </List> */}
-
+{/*  */}
                   <List sx={{ p: 0 }}>
                     {plan.metadata &&
                       Object.entries(plan.metadata).map(([key, value]) => (
