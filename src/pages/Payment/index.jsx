@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -13,22 +13,14 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import CheckOutlined from "@ant-design/icons/CheckOutlined";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
-// project import
+import CheckOutlined from "@ant-design/icons/CheckOutlined";
+
 import MainCard from "components/MainCard";
-import CouponModal from "./CouponModal";
 import { PaymentApiService } from "services/api/Payment";
 
-function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
+function Payment() {
   const theme = useTheme();
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [searchParams] = useSearchParams();
-  const isFromRestriction =
-    isFromRestrictionProp || searchParams.get("source") === "restriction";
 
   const [pricingData, setPricingData] = useState([]);
   const [checkoutLoadingId, setCheckoutLoadingId] = useState(null);
@@ -40,10 +32,11 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
   });
 
   useEffect(() => {
+    document.title = "Subscription Plans";
+
     PaymentApiService.getProducts()
       .then((response) => {
-        const products = response?.data?.products || [];
-        setPricingData(products);
+        setPricingData(response?.data?.products || []);
       })
       .catch(() => {
         setSnackData({
@@ -54,22 +47,9 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
       });
   }, []);
 
-  const handleOpenModal = (plan) => {
-    setSelectedPlan(plan);
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
   const handleSelectPlan = (plan) => {
-    if (!isFromRestriction) {
-      handleOpenModal(plan);
-      return;
-    }
-
     setCheckoutLoadingId(plan.id);
+
     sessionStorage.setItem(
       "selectedPlan",
       JSON.stringify({
@@ -79,17 +59,21 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
       }),
     );
 
-    PaymentApiService.createCheckout({ price_id: plan.price_id })
+    PaymentApiService.createCheckout({
+      price_id: plan.price_id,
+    })
       .then((response) => {
         const checkoutUrl = response?.data?.checkout_url;
+
         if (checkoutUrl) {
           window.location.href = checkoutUrl;
         } else {
-          throw new Error("Missing checkout URL");
+          throw new Error("Checkout URL not found.");
         }
       })
       .catch(() => {
         setCheckoutLoadingId(null);
+
         setSnackData({
           show: true,
           message: "Failed to start checkout. Please try again.",
@@ -101,26 +85,22 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
   return (
     <Box sx={{ py: 4, px: { xs: 2, sm: 4, md: 6 } }}>
       <Container maxWidth="xl">
-        <Stack spacing={2} my={6} width={"100%"} alignItems={"center"}>
-          <Typography variant="h1" sx={{ fontWeight: 700 }} textAlign="center">
+        <Stack spacing={2} my={6} alignItems="center">
+          <Typography variant="h1" fontWeight={700} textAlign="center">
             Finalize Your Subscription
           </Typography>
+
           <Typography
             variant="h5"
-            color="textSecondary"
-            sx={{ maxWidth: 600, mx: "auto" }}
+            color="text.secondary"
             textAlign="center"
+            sx={{ maxWidth: 650 }}
           >
-            Activate your account to access the dashboard.
+            Purchase additional contracts to continue using AI Due Diligence.
           </Typography>
         </Stack>
 
-        <Grid
-          container
-          spacing={3}
-          justifyContent="center"
-          alignItems="stretch"
-        >
+        <Grid container spacing={3} justifyContent="center">
           {pricingData.map((plan) => (
             <Grid item xs={12} sm={6} md={4} key={plan.id}>
               <MainCard
@@ -128,54 +108,50 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  position: "relative",
-                  transition:
-                    "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+                  transition: "0.3s",
                   "&:hover": {
                     transform: "translateY(-8px)",
                     boxShadow: theme.customShadows.z1,
                   },
                 }}
               >
-                <Box sx={{ p: 1 }}>
-                  <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+                <Box sx={{ p: 2 }}>
+                  <Typography variant="h4" fontWeight={600} gutterBottom>
                     {plan.name}
                   </Typography>
+
                   <Typography
                     variant="body2"
-                    color="textSecondary"
-                    sx={{ mb: 3, minHeight: 40 }}
+                    color="text.secondary"
+                    sx={{
+                      minHeight: 40,
+                      mb: 3,
+                    }}
                   >
                     {plan.description}
                   </Typography>
 
                   <Stack
                     direction="row"
-                    alignItems="baseline"
                     spacing={0.5}
+                    alignItems="baseline"
                     sx={{ mb: 3 }}
                   >
-                    <Typography
-                      variant="h2"
-                      component="span"
-                      sx={{ fontWeight: 700 }}
-                    >
+                    <Typography variant="h2" fontWeight={700}>
                       ${plan.amount / 100}
                     </Typography>
                   </Stack>
 
                   <Button
                     fullWidth
-                    variant="outlined"
-                    color="primary"
+                    variant="contained"
                     size="large"
-                    sx={{
-                      py: 1.5,
-                      borderRadius: 1.5,
-                      fontWeight: 600,
-                      mb: 4,
-                    }}
                     disabled={checkoutLoadingId === plan.id}
+                    sx={{
+                      mb: 4,
+                      py: 1.5,
+                      borderRadius: 2,
+                    }}
                     onClick={() => handleSelectPlan(plan)}
                   >
                     {checkoutLoadingId === plan.id
@@ -185,47 +161,35 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
 
                   <Divider sx={{ mb: 3 }} />
 
-                  <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                    What's included:
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={600}
+                    sx={{ mb: 2 }}
+                  >
+                    What's Included
                   </Typography>
-{/*  */}
 
-                  {/* <List sx={{ p: 0 }}>
-                    <ListItem
-                      disableGutters
-                      sx={{ py: 1, alignItems: "flex-start" }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 32, mt: 0.5 }}>
-                        <CheckOutlined
-                          style={{
-                            color: theme.palette.success.main,
-                            fontSize: "1rem",
-                          }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`${plan.contract_count} Contract(s)/Documents`}
-                        primaryTypographyProps={{
-                          variant: "body2",
-                          sx: { color: theme.palette.text.primary },
-                        }}
-                      />
-                    </ListItem>
-                  </List> */}
-{/*  */}
                   <List sx={{ p: 0 }}>
                     {plan.metadata &&
                       Object.entries(plan.metadata).map(([key, value]) => (
                         <ListItem
                           key={key}
                           disableGutters
-                          sx={{ py: 1, alignItems: "flex-start" }}
+                          sx={{
+                            alignItems: "flex-start",
+                            py: 1,
+                          }}
                         >
-                          <ListItemIcon sx={{ minWidth: 32, mt: 0.5 }}>
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 32,
+                              mt: 0.5,
+                            }}
+                          >
                             <CheckOutlined
                               style={{
                                 color: theme.palette.success.main,
-                                fontSize: "1rem",
+                                fontSize: 16,
                               }}
                             />
                           </ListItemIcon>
@@ -234,7 +198,6 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
                             primary={value}
                             primaryTypographyProps={{
                               variant: "body2",
-                              sx: { color: theme.palette.text.primary },
                             }}
                           />
                         </ListItem>
@@ -248,26 +211,32 @@ function Payment({ isFromRestriction: isFromRestrictionProp = false }) {
       </Container>
 
       <Snackbar
-        style={{ top: "80px" }}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackData.show}
         autoHideDuration={3000}
-        onClose={() => setSnackData({ show: false })}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        onClose={() =>
+          setSnackData((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
+        sx={{ top: "80px" }}
       >
         <Alert
-          onClose={() => setSnackData({ show: false })}
           severity={snackData.type}
+          onClose={() =>
+            setSnackData((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
         >
           {snackData.message}
         </Alert>
       </Snackbar>
-
-      <CouponModal
-        open={modalOpen}
-        setSnackData={setSnackData}
-        handleClose={handleCloseModal}
-        plan={selectedPlan}
-      />
     </Box>
   );
 }
