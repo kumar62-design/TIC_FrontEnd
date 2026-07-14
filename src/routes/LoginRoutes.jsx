@@ -3,7 +3,7 @@ import { lazy } from "react";
 // project import
 import Loadable from "components/Loadable";
 import MinimalLayout from "layout/MinimalLayout";
-import { Navigate, useLocation } from "react-router";
+import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 // render - login

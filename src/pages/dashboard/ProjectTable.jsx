@@ -26,7 +26,7 @@ import { API_ERROR_MESSAGE } from "shared/constants";
 import { formatDate } from "shared/utility";
 import CardView from "pages/ProjectListing/CardView";
 import ToggleButtons from "pages/ProjectListing/ToggleButton";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const TrashLucideIcon = ({
   size = 18,

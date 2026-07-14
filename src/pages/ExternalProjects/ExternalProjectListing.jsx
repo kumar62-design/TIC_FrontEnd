@@ -20,7 +20,7 @@ import {
 import projectIcon from "../../assets/images/icons/projectIcon3.svg";
 import { getStatusChipProps } from "shared/utility";
 import { ProjectApiService } from "services/api/ProjectAPIService";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const createData = (
   index,

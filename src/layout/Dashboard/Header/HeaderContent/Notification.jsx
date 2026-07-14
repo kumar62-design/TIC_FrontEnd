@@ -23,6 +23,7 @@ import MainCard from "components/MainCard";
 import Transitions from "components/@extended/Transitions";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import { Button } from "@mui/material";
 
 // assets
 // import BellOutlined from "@ant-design/icons/BellOutlined";
@@ -282,7 +283,33 @@ export default function Notification() {
   };
 
   return (
-    <Box sx={{ flexShrink: 0, ml: 0.75 }}>
+    <Box sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: 1,
+      flexShrink: 0,
+      ml: 0.75,
+    }}>
+      {/* Buy More Button */}
+  <Button
+    variant="contained"
+    color="primary"
+    size="small"
+    onClick={() => navigate("/payment")}
+    sx={{
+      textTransform: "none",
+      borderRadius: "8px",
+      fontWeight: 600,
+      px: 2,
+      height: 36,
+      boxShadow: "none",
+      "&:hover": {
+        boxShadow: "none",
+      },
+    }}
+  >
+    Buy More
+  </Button>
       <IconButton
         color="secondary"
         variant="light"
@@ -296,6 +323,7 @@ export default function Notification() {
         aria-haspopup="true"
         onClick={handleToggle}
       >
+        
         <Badge badgeContent={read} color="primary">
           {/* <BellOutlined /> */}
           <img src={bellicon} width="20px" />

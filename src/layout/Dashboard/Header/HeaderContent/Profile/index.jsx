@@ -32,7 +32,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { AuthApiService } from "services/api/AuthApiService";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { API_SUCCESS_MESSAGE } from "shared/constants";
 import userIcon from "../../../../../assets/images/icons/users2.svg";
 import informationIcon from "../../../../../assets/images/icons/information.svg";

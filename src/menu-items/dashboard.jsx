@@ -105,6 +105,17 @@ const dashboard = {
       access: ["all"],
       superAdminAccess: false,
     },
+
+    {
+      id: "contractUses",
+      title: "Contract Uses",
+      type: "item",
+      url: "/contract-uses",
+      icon: icons.PaymentHistoryOutlined,
+      breadcrumbs: false,
+      access: ["all"],
+      superAdminAccess: false,
+    },
   ],
 };
 

@@ -9,12 +9,11 @@ import Notification from './Notification';
 // import PlusSquareFilled from "@ant-design/icons/PlusSquareFilled";
 // import PlusSquareOutlined from "@ant-design/icons/PlusSquareOutlined";
 // import Button  from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
+
 
 
 // ==============================|| HEADER - CONTENT ||============================== //
 export default function HeaderContent() {
-  const navigate = useNavigate();
   const userdetails = JSON.parse(sessionStorage.getItem("userDetails"));
   const userRole = userdetails?.[0]?.role_name;
 
