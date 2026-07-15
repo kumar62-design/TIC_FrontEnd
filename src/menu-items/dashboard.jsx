@@ -108,7 +108,7 @@ const dashboard = {
 
     {
       id: "contractUses",
-      title: "Contract Uses",
+      title: "Subscription Usage",
       type: "item",
       url: "/contract-uses",
       icon: icons.PaymentHistoryOutlined,
