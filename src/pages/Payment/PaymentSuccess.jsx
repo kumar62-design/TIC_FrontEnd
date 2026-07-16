@@ -185,6 +185,10 @@ function PaymentSuccess() {
               <Typography variant="subtitle1" fontWeight={600}>
                 {payment.product_name}
               </Typography>
+
+              <Typography variant="subtitle1" fontWeight={600}>
+                {payment.contract_count}
+              </Typography>
               <Typography variant="h4" color="primary">
                 ${payment.amount}
               </Typography>
@@ -241,6 +245,11 @@ function PaymentSuccess() {
             <Typography variant="subtitle1" fontWeight={600}>
               {payment.product_name}
             </Typography>
+
+            <Typography variant="subtitle1" fontWeight={600}>
+              {payment.contract_count}
+            </Typography>
+
             <Typography variant="h4" color="primary">
               ${payment.amount}
             </Typography>

@@ -65,6 +65,14 @@ const PaymentHistory = () => {
       key: "product_name",
       render: (text) => text || "-",
     },
+
+    {
+      title: "Contract Count",
+      dataIndex: "contract_count",
+      key: "contract_count",
+      align: "center",
+      render: (value) => value ?? 0,
+    },
     {
       title: "Amount",
       key: "amount",
